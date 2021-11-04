@@ -1,7 +1,5 @@
 
-// Our Scala versions.
-lazy val `scala-2.13` = "2.13.6"
-lazy val `scala-3`    = "3.0.2"
+lazy val `scala-3` = "3.1.2-RC1-bin-SNAPSHOT"
 
 // Publishing
 ThisBuild / name         := "pool-party"
@@ -23,8 +21,7 @@ headerLicense  := Some(HeaderLicense.Custom(
 )
 
 // Compilation
-ThisBuild / scalaVersion       := `scala-2.13`
-ThisBuild / crossScalaVersions := Seq(`scala-2.13`, `scala-3`)
+ThisBuild / scalaVersion := `scala-3`
 
 lazy val root = project
   .in(file("."))
@@ -69,15 +66,11 @@ lazy val poolparty = crossProject(JVMPlatform, JSPlatform)
     ),
     testFrameworks += new TestFramework("munit.Framework"),
 
-    // Scala 2 needs scala-reflect
-    libraryDependencies ++= Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value).filterNot(_ => scalaVersion.value.startsWith("3.")),
-
     // dottydoc really doesn't work at all right now
-    Compile / doc / sources := {
-      val old = (Compile / doc / sources).value
-      if (scalaVersion.value.startsWith("3."))
-        Seq()
-      else
-        old
-    }
+    Compile / doc / sources := Seq()
   )
+
+addCommandAlias(
+ "codeCoverage",
+ "coverage ; test ; coverageReport"
+)
